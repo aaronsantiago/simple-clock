@@ -1,0 +1,62 @@
+<html>
+<head>
+<style>
+#fullscreenContent {
+	width:  100vw;
+	height:  100vh;
+	z-index: 60;
+	position: absolute;
+	top: 0;
+	left:  0;
+	background-color: transparent;
+	text-align: center;
+	line-height: 100vh;
+	font-size: 5vmin;
+}
+</style>
+</head>
+
+<body>
+
+<div id="fullscreenContent">click to begin.</div>
+
+
+
+<script type="text/javascript">
+
+var endTime = Date.now() + 3 * 60 * 1000;
+
+function updateTime() {
+
+	// get remaining time in milliseconds
+	var timeDiff = endTime - Date.now();
+
+	if (timeDiff > 0) {
+
+		var time =
+							Math.floor(timeDiff/1000/60)
+			+ ":" + ( "" + Math.floor((timeDiff/1000) % 60) ).padStart(2, '0') ;
+		document.getElementById("fullscreenContent").innerHTML = time;
+		requestAnimationFrame(updateTime);
+	}
+	else {
+		document.getElementById("fullscreenContent").innerHTML = "0:00";
+
+	}
+}
+requestAnimationFrame(updateTime);
+
+```
+
+#fullscreenContent {
+	font-size: 20vmin;
+  color: white;
+  filter: drop-shadow(0 0 8px #0000009a);
+}
+
+```
+
+
+</script>
+</body>
+</html>
