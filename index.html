@@ -12,49 +12,60 @@
 	text-align: center;
 	line-height: 100vh;
 	font-size: 5vmin;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center; 
+	background-size: cover;
+}
+html {
+	pointer-events: none;
 }
 </style>
 </head>
 
 <body>
 
-<div id="fullscreenContent">click to begin.</div>
-
-
+<div id="fullscreenContent"></div>
 
 <script type="text/javascript">
 
-var endTime = Date.now() + 3 * 60 * 1000;
+const container = document.getElementById("fullscreenContent");
 
-function updateTime() {
+const urlParams = new URLSearchParams(window.location.search);
 
-	// get remaining time in milliseconds
-	var timeDiff = endTime - Date.now();
-
-	if (timeDiff > 0) {
-
-		var time =
-							Math.floor(timeDiff/1000/60)
-			+ ":" + ( "" + Math.floor((timeDiff/1000) % 60) ).padStart(2, '0') ;
-		document.getElementById("fullscreenContent").innerHTML = time;
-		requestAnimationFrame(updateTime);
-	}
-	else {
-		document.getElementById("fullscreenContent").innerHTML = "0:00";
-
-	}
+if (urlParams.has("bgc")) {
+	container.style.backgroundColor = urlParams.get("bgc")
 }
-requestAnimationFrame(updateTime);
-
-```
-
-#fullscreenContent {
-	font-size: 20vmin;
-  color: white;
-  filter: drop-shadow(0 0 8px #0000009a);
+else if (urlParams.has("bgi")) {
+	container.style.backgroundImage = "url('" + urlParams.get("bgi") + "')";
 }
 
-```
+if (urlParams.has("text")) {
+	container.innerHTML = urlParams.get("text");
+}
+else if (urlParams.has("timer")) {
+	var endTime = Date.now() + parseFloat(urlParams.get("timer")) * 1000;
+
+	function updateTime() {
+
+		// get remaining time in milliseconds
+		var timeDiff = endTime - Date.now();
+
+		if (timeDiff > 0) {
+
+			var time =
+								Math.floor(timeDiff/1000/60)
+				+ ":" + ( "" + Math.floor((timeDiff/1000) % 60) ).padStart(2, '0') ;
+			container.innerHTML = time;
+			requestAnimationFrame(updateTime);
+		}
+		else {
+			container.innerHTML = "0:00";
+
+		}
+	}
+	requestAnimationFrame(updateTime);
+}
 
 
 </script>
