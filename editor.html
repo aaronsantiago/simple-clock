@@ -1,0 +1,132 @@
+<html>
+<head>
+	<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+body {
+	margin: 0;
+}
+iframe {
+	border:  none;
+	width:  100vw;
+	height:  100vh;
+}
+
+</style>
+
+<script src="tweakpane-3.0.2.js"></script>
+</head>
+
+<body>
+
+<iframe id="overlay" src="/?text=hi"></iframe>
+
+<script type="text/javascript">
+
+const PARAMS = {
+  backgroundColor: '#00000000',
+  image_imgUrl: "https://i.gifer.com/2yqT.gif",
+  text_text: "sayonara evangelion",
+  timer_length: 90,
+  type: "text",
+  finalUrl: ""
+};
+
+const pane = new Tweakpane.Pane();
+pane.addMonitor(PARAMS, 'finalUrl', {
+	label: "overlay url"
+});
+pane.addButton({
+  title: 'copy url to clipboard'
+}).on("click", () => {
+	 navigator.clipboard.writeText(PARAMS.finalUrl);
+});
+let globalSettingsFolder = pane.addFolder({
+  title: 'Global settings',
+  expanded: true,
+});
+globalSettingsFolder.addInput(PARAMS, 'backgroundColor', {
+	label: "background color"
+});
+
+pane.addInput(PARAMS, 'type', {
+  options: {
+    text: 'text',
+    image: 'image',
+    timer: 'timer',
+  },
+});
+let textSettingsFolder = pane.addFolder({
+  title: 'text settings',
+  expanded: true,
+});
+textSettingsFolder.addInput(PARAMS, 'text_text', {
+	label: "text"
+});
+let imageSettingsFolder = pane.addFolder({
+  title: 'image settings',
+  expanded: true,
+});
+imageSettingsFolder.addInput(PARAMS, 'image_imgUrl', {
+	label: "image url"
+});
+let timerSettingsFolder = pane.addFolder({
+  title: 'timer settings',
+  expanded: true,
+});
+timerSettingsFolder.addInput(PARAMS, 'timer_length', {
+	label: "timer length",
+	step: 1
+});
+
+// if (urlParams.has("bgi")) {
+// 	container.style.backgroundImage = "url('" + urlParams.get("bgi") + "')";
+// }
+
+// if (urlParams.has("text")) {
+// 	container.innerHTML = urlParams.get("text");
+// }
+// else if (urlParams.has("timer")) {
+// }
+
+if (localStorage.getItem("currentPane") != null) {
+	pane.importPreset(JSON.parse(localStorage.getItem("currentPane")));
+}
+
+function refreshUrl() {
+
+	const preset = pane.exportPreset();
+	console.log(preset);
+	localStorage.setItem("currentPane", JSON.stringify(preset));
+	let type = PARAMS.type;
+
+	// only show relevant folders
+	for (let folder of [textSettingsFolder, imageSettingsFolder, timerSettingsFolder])
+		folder.hidden = false;
+	if (type != "text") textSettingsFolder.hidden = true;
+	if (type != "image") imageSettingsFolder.hidden = true;
+	if (type != "timer") timerSettingsFolder.hidden = true;
+
+	// generate url
+	let finalUrl = new URL(window.location.protocol + "//" + window.location.host);
+	if (type == "text") {
+		finalUrl.searchParams.append("text", PARAMS.text_text);
+	}
+	if (type == "image") {
+		finalUrl.searchParams.append("bgi", PARAMS.image_imgUrl);
+	}
+	if (type == "timer") {
+		finalUrl.searchParams.append("timer", PARAMS.timer_length);
+	}
+	finalUrl.searchParams.append("bgc", PARAMS.backgroundColor)
+	document.getElementById("overlay").src = finalUrl.href;
+	PARAMS.finalUrl = finalUrl.href;
+}
+refreshUrl();
+
+
+pane.on("change", refreshUrl);
+
+</script>
+</body>
+</html>
