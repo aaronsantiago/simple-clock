@@ -107,8 +107,10 @@ function refreshUrl() {
 	if (type != "image") imageSettingsFolder.hidden = true;
 	if (type != "timer") timerSettingsFolder.hidden = true;
 
+	let baseUrl = window.location.href;
+	baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/")) + "/"
 	// generate url
-	let finalUrl = new URL(window.location.protocol + "//" + window.location.host);
+	let finalUrl = new URL(baseUrl);
 	if (type == "text") {
 		finalUrl.searchParams.append("text", PARAMS.text_text);
 	}
